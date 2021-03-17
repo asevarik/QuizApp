@@ -1,9 +1,10 @@
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
-import 'questionBrain.dart';
+//TODO: Step 2 - Import the rFlutter_Alert package here.
+import 'quiz_brain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() => runApp(Quizzler());
-QuestionsBrain questionobj = new QuestionsBrain();
 
 class Quizzler extends StatelessWidget {
   @override
@@ -29,45 +30,30 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
-  int score = 0;
-  void answercheck(bool useranswer) {
-    bool correctanswer = questionobj.getQuestionAnswers();
+
+  void checkAnswer(bool userPickedAnswer) {
+    bool correctAnswer = quizBrain.getCorrectAnswer();
+
     setState(() {
-      if (questionobj.isfinished() == true) {
-        Alert(
-            context: context,
-            title:
-                "Congratulations You have Successfully completed the quiz \n \bscore:$score",
-            buttons: [
-              DialogButton(
-                  child: Text('Close'),
-                  onPressed: () => Navigator.pop(context),
-                  ),
-              DialogButton(
-                  child: Text('Restart'),
-                  onPressed: () {
-                    setState(() {
-                      scoreKeeper = [];
-                      questionobj.resetQuestion();
-                      Navigator.pop(context);
-                    });
-                  })
-            ]).show();
+      //TODO: Step 4 - Use IF/ELSE to check if we've reached the end of the quiz. If true, execute Part A, B, C, D.
+      //TODO: Step 4 Part A - show an alert using rFlutter_alert (remember to read the docs for the package!)
+      //HINT! Step 4 Part B is in the quiz_brain.dart
+      //TODO: Step 4 Part C - reset the questionNumber,
+      //TODO: Step 4 Part D - empty out the scoreKeeper.
+
+      //TODO: Step 5 - If we've not reached the end, ELSE do the answer checking steps below 👇
+      if (userPickedAnswer == correctAnswer) {
+        scoreKeeper.add(Icon(
+          Icons.check,
+          color: Colors.green,
+        ));
       } else {
-        if (correctanswer == useranswer) {
-          scoreKeeper.add(Icon(
-            Icons.check,
-            color: Colors.green,
-          ));
-          score++;
-        } else {
-          scoreKeeper.add(Icon(
-            Icons.close,
-            color: Colors.red,
-          ));
-        }
-        questionobj.nextquestion();
+        scoreKeeper.add(Icon(
+          Icons.close,
+          color: Colors.red,
+        ));
       }
+      quizBrain.nextQuestion();
     });
   }
 
@@ -83,7 +69,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questionobj.setQuestionText(),
+                quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -107,7 +93,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                answercheck(true);
+                //The user picked true.
+                checkAnswer(true);
               },
             ),
           ),
@@ -126,7 +113,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 //The user picked false.
-                answercheck(false);
+                checkAnswer(false);
               },
             ),
           ),
